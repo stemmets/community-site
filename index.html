@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntraHub — Internal Community Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">IH</div>
+      <div class="sidebar-logo-text">
+        IntraHub
+        <span>Internal Portal</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-item active" data-page="ideas">
+        <span class="nav-icon">💡</span> Ideas Feed
+      </div>
+      <div class="nav-item" data-page="tickets">
+        <span class="nav-icon">🎫</span> My Tickets
+      </div>
+      <div class="nav-item" data-page="roadmap">
+        <span class="nav-icon">🗺</span> Roadmap
+      </div>
+      <div class="nav-item" data-page="releases">
+        <span class="nav-icon">🚀</span> Release Notes
+      </div>
+      <div class="nav-item" data-page="kb">
+        <span class="nav-icon">📚</span> Knowledge Base
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="font-weight:600;color:#fff;margin-bottom:2px;">IntraHub v2.4</div>
+      <div>Product &amp; Engineering</div>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
+  <div class="main-wrap">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbarTitle">Ideas Feed</div>
+      </div>
+      <div class="topbar-right">
+        <!-- Role switcher -->
+        <div class="role-switcher" title="Switch role to preview different views">
+          <button class="role-btn active" id="roleUser" onclick="App.setRole('user')">👤 User</button>
+          <button class="role-btn" id="roleAdmin" onclick="App.setRole('admin')">🔧 Admin</button>
+        </div>
+        <!-- Avatar -->
+        <div class="avatar avatar-user" id="topbarAvatar" title="Current user">M</div>
+      </div>
+    </header>
+
+    <!-- ── Pages ─────────────────────────────────────────────────────────── -->
+    <main>
+
+      <!-- ─── IDEAS FEED ────────────────────────────────────────────────── -->
+      <div class="page" id="page-ideas">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Ideas Feed</div>
+            <div class="page-desc">Vote and comment on employee ideas. Help shape the product.</div>
+          </div>
+          <button class="btn btn-primary" id="btnNewIdea" onclick="Ideas.openCreateForm()">＋ Submit Idea</button>
+        </div>
+
+        <!-- filters -->
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="ideaSearch" placeholder="Search ideas…" oninput="Ideas.applyFilters()" />
+          </div>
+          <select class="filter-select" id="ideaCategoryFilter" onchange="Ideas.applyFilters()">
+            <option value="">All Categories</option>
+            <option>Finance Portal</option>
+            <option>HR System</option>
+            <option>Reporting</option>
+            <option>General</option>
+          </select>
+          <select class="filter-select" id="ideaStatusFilter" onchange="Ideas.applyFilters()">
+            <option value="">All Statuses</option>
+            <option>New</option>
+            <option>Under Review</option>
+            <option>Planned</option>
+            <option>In Progress</option>
+            <option>Delivered</option>
+            <option>Declined</option>
+          </select>
+          <select class="filter-select" id="ideaSortFilter" onchange="Ideas.applyFilters()">
+            <option value="newest">Newest First</option>
+            <option value="votes">Most Voted</option>
+          </select>
+        </div>
+
+        <div class="ideas-grid" id="ideasGrid"></div>
+      </div>
+
+      <!-- ─── MY TICKETS ───────────────────────────────────────────────── -->
+      <div class="page page-hidden" id="page-tickets">
+        <div class="page-header">
+          <div>
+            <div class="page-title" id="ticketsPageTitle">My Tickets</div>
+            <div class="page-desc" id="ticketsPageDesc">Track the status of your open support requests.</div>
+          </div>
+        </div>
+
+        <!-- list view -->
+        <div id="ticketListView">
+          <div class="tickets-list" id="ticketsList"></div>
+        </div>
+
+        <!-- detail view -->
+        <div id="ticketDetailView" class="page-hidden">
+          <button class="btn btn-ghost btn-sm mb-12" onclick="Tickets.backToList()">← Back to tickets</button>
+          <div id="ticketDetailContent"></div>
+        </div>
+      </div>
+
+      <!-- ─── ROADMAP ──────────────────────────────────────────────────── -->
+      <div class="page page-hidden" id="page-roadmap">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Product Roadmap</div>
+            <div class="page-desc">Strategic themes shaping our product direction. No fixed dates — just intent.</div>
+          </div>
+          <div id="roadmapAdminControls" class="page-hidden">
+            <button class="btn btn-secondary btn-sm" id="btnEditRoadmap" onclick="Roadmap.toggleEdit()">✏️ Edit Themes</button>
+          </div>
+        </div>
+        <div class="roadmap-grid" id="roadmapGrid"></div>
+      </div>
+
+      <!-- ─── RELEASE NOTES ────────────────────────────────────────────── -->
+      <div class="page page-hidden" id="page-releases">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Release Notes</div>
+            <div class="page-desc">A full history of everything we've shipped.</div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btnNewRelease" style="display:none" onclick="Releases.showForm()">＋ New Release</button>
+        </div>
+
+        <!-- admin form -->
+        <div id="releaseFormSection" class="page-hidden">
+          <div class="release-form-card">
+            <div class="flex-between mb-16">
+              <div class="font-600">Create New Release</div>
+              <button class="btn btn-ghost btn-sm" onclick="Releases.hideForm()">✕ Cancel</button>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Version</label>
+              <input class="form-input" id="relVersion" placeholder="e.g. v2.5" style="max-width:160px"/>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Release Title</label>
+              <input class="form-input" id="relTitle" placeholder="e.g. May Release — Mobile & Performance"/>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Summary</label>
+              <textarea class="form-textarea" id="relSummary" placeholder="Brief overview of this release…"></textarea>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Items (one per line)</label>
+              <textarea class="form-textarea" id="relItems" placeholder="Bulk export of payroll reports&#10;Improved dashboard loading&#10;Bug fix: rounding error in calculations" style="min-height:110px"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="Releases.saveRelease()">Save Release</button>
+          </div>
+        </div>
+
+        <div class="releases-list" id="releasesList"></div>
+      </div>
+
+      <!-- ─── KNOWLEDGE BASE ───────────────────────────────────────────── -->
+      <div class="page page-hidden" id="page-kb">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Knowledge Base</div>
+            <div class="page-desc">Manuals, video guides, and AI-powered support.</div>
+          </div>
+        </div>
+
+        <div class="kb-tabs">
+          <div class="kb-tab active" data-tab="manuals" onclick="KB.switchTab('manuals')">📖 Manuals</div>
+          <div class="kb-tab" data-tab="videos" onclick="KB.switchTab('videos')">▶️ Video Guides</div>
+        </div>
+
+        <!-- Manuals -->
+        <div class="kb-panel active" id="kb-manuals">
+          <div class="filter-bar mb-12">
+            <div class="search-box" style="max-width:380px">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="manualSearch" placeholder="Search articles…" oninput="KB.searchManuals()" />
+            </div>
+          </div>
+          <div id="manualsList"></div>
+        </div>
+
+        <!-- Videos -->
+        <div class="kb-panel" id="kb-videos">
+          <div class="video-grid" id="videoGrid"></div>
+        </div>
+      </div>
+
+    </main><!-- /main -->
+  </div><!-- /main-wrap -->
+</div><!-- /app -->
+
+<!-- ── Support Bot FAB ──────────────────────────────────────────────────────── -->
+<div class="bot-fab" onclick="Bot.toggle()" title="Support Bot">🤖</div>
+
+<div class="bot-window hidden" id="botWindow">
+  <div class="bot-header">
+    <div class="bot-avatar-wrap">🤖</div>
+    <div>
+      <div class="bot-name">IntraBot</div>
+      <div class="bot-status">● Online — here to help</div>
+    </div>
+    <button class="bot-close" onclick="Bot.toggle()">✕</button>
+  </div>
+  <div class="bot-messages" id="botMessages"></div>
+  <div class="bot-input-row">
+    <input type="text" id="botInput" placeholder="Ask about the portal…" onkeydown="Bot.handleKey(event)" />
+    <div class="bot-send-btn" onclick="Bot.send()">➤</div>
+  </div>
+</div>
+
+<!-- ── Idea Detail Modal ────────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="ideaModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="ideaModalTitle">Idea</span>
+      <button class="modal-close" onclick="Ideas.closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="ideaModalBody"></div>
+  </div>
+</div>
+
+<!-- ── Create Idea Modal ───────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="createIdeaModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <span class="modal-title">Submit a New Idea</span>
+      <button class="modal-close" onclick="Ideas.closeCreateForm()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label class="form-label">Title <span style="color:#EF4444">*</span></label>
+        <input class="form-input" id="newIdeaTitle" placeholder="A clear, concise title for your idea" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Category <span style="color:#EF4444">*</span></label>
+        <select class="form-select" id="newIdeaCategory">
+          <option value="">Select a category…</option>
+          <option>Finance Portal</option>
+          <option>HR System</option>
+          <option>Reporting</option>
+          <option>General</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Description <span style="color:#EF4444">*</span></label>
+        <textarea class="form-textarea" id="newIdeaDesc" placeholder="Describe the problem and how your idea would solve it…" style="min-height:100px"></textarea>
+      </div>
+      <div class="text-muted mt-8">
+        💡 Your idea will be reviewed by the product team before being made visible to everyone.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Ideas.closeCreateForm()">Cancel</button>
+      <button class="btn btn-primary" onclick="Ideas.submitIdea()">Submit Idea</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Article Modal ───────────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="articleModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <span class="modal-title" id="articleModalTitle">Article</span>
+      <button class="modal-close" onclick="KB.closeArticle()">✕</button>
+    </div>
+    <div class="modal-body" id="articleModalBody"></div>
+  </div>
+</div>
+
+<!-- ── Toast container ────────────────────────────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── Scripts ─────────────────────────────────────────────────────────────── -->
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
